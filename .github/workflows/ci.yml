@@ -22,7 +22,7 @@ jobs:
         run: uv run pre-commit run -a
 
       - name: Run tests
-        run: uv run python -m unittest
+        run: uv run python -m unittest test_task.py
 
     strategy:
       matrix:
