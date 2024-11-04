@@ -4,6 +4,7 @@ on: [push]
 jobs:
   uv-example:
     name: python
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
