@@ -7,6 +7,7 @@ import numpy as np
 class TestTask(unittest.TestCase):
     def test_task(self):
         t = Task()
+        t.work()
         np.testing.assert_allclose(t.a @ t.x, t.b)
 
 
