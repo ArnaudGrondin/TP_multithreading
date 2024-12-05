@@ -7,7 +7,7 @@ class Boss(manager.QueueClient):
         super().__init__()
 
     def put_work(self):
-        tache = task.Task()
+        tache = task.Task(0, 25)
         self.task_queue.put(tache)
 
     def get_result(self):
