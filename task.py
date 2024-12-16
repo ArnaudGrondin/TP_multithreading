@@ -13,7 +13,7 @@ class Task:
         self.b = np.random.rand(self.size)
         # prepare room for the results
         self.x = np.zeros((self.size))
-        self.time = 0
+        self.time = 0.0
 
     def work(self):
         start = time.perf_counter()
