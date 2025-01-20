@@ -25,7 +25,7 @@ public:
   Task(int identifier, int size);
   void work();
   std::string to_json();
-  Task from_json(std::string str);
+  static Task from_json(std::string str);
   ~Task();
 };
 
@@ -53,13 +53,26 @@ void Task::work() { // on lance le travail de la tache et on mesure le temps de
 }
 
 Task Task::from_json(std::string str) {
-  // on recupere les donnée sous format json
+  // on recupere les données sous format json
   json j = json::parse(str);
-  //
-  Task t;
-  // t = Task(j["identifier"],j["size"]);
-  // t.a = json::array(j["a"]);
-  // t.b = j["b"];
+  Task t = Task(j["identifier"], j["size"]);
+
+  // Initialiser la matrice a
+  auto a_data = j["a"];
+  // t.a.resize(t.size, t.size); // Redimensionne la matrice
+  for (int i = 0; i < t.size; ++i) {
+    for (int j = 0; j < t.size; ++j) {
+      t.a(i, j) = a_data[i][j];
+    }
+  }
+
+  // Initialiser le vecteur b
+  auto b_data = j["b"];
+  // t.b.resize(t.size);
+  for (int i = 0; i < t.size; ++i) {
+    // std::cout << "b_data:\n" << b_data[i]<< "\n";
+    t.b(i) = b_data[i];
+  }
 
   return t;
 }
@@ -73,16 +86,26 @@ int main() {
   cpr::Response r = cpr::Get(cpr::Url{"127.0.0.1:8000"});
   std::string str = r.text;
 
-  // std::ifstream f("example.json");
+  // //Simulation d'une réponse JSON
+  //   std::string simulated_json = R"(
+  //   {
+  //       "identifier": 1,
+  //       "a": [[1.0, 2.0], [3.0, 4.0]],t
+  //       "b": [5.0, 6.0],
+  //       "size": 2,
 
-  json j = json::parse(str);
+  //   })";
 
-  std::cout << j["b"] << std::endl;
+  // Initialisation depuis JSON
+  // std::cout << "STRING :\n" << str << "\n";
+  Task t = Task::from_json(str);
 
-  MatrixXf m = Eigen::Array(j["b"])
+  // std::cout << "Matrice a:\n" << t.a << "\n";
+  // std::cout << "Vecteur b:\n" << t.b << "\n";
 
-      // std::cout << j.dump(4) << std::endl;
-      return 0;
+  t.work(); // Résolution
+
+  return 0;
 } // TODO : FAIRE UN README pour les résultats,comparer different solver eigen
 // TODO : COMPILER EN MODE RELEASE (trouver le bon parametre cmake build type
 // (en CLI))
