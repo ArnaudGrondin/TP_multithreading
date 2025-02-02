@@ -30,12 +30,12 @@ public:
 };
 
 Task::Task(int identifier = 0, int size = 3) {
-  identifier = identifier;
-  size = size;
+  this->identifier = identifier;
+  this->size = size;
   a = MatrixXf::Random(size, size);
   b = VectorXf::Random(size);
   x = VectorXf::Zero(size);
-  float time = 0.0;
+  double time = 0.0;
 }
 
 void Task::work() { // on lance le travail de la tache et on mesure le temps de
@@ -45,9 +45,10 @@ void Task::work() { // on lance le travail de la tache et on mesure le temps de
   x = a.lu().solve(b);
 
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-  // time = double(end - start); TODO essayer de le convertir en float
+  // time = double(end - start);
   std::chrono::duration<double> diff =
       std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+  time = diff.count();
 
   std::cout << "Temps calcul  = " << diff.count() << "\n";
 }
@@ -83,8 +84,26 @@ int main() {
 
   std::cout << "hello" << std::endl;
 
-  cpr::Response r = cpr::Get(cpr::Url{"127.0.0.1:8000"});
-  std::string str = r.text;
+  cpr::Response r;
+
+  std::string str;
+  Task t;
+  double sum = 0.0;
+  int i = 0;
+  while (i < 10) {
+    // on récupère la matrice
+    r = cpr::Get(cpr::Url{"127.0.0.1:8000"});
+    str = r.text;
+
+    // on deserialise la chaine de charactère
+    t = Task::from_json(str);
+    t.work(); // Résolution
+    i++;
+  }
+
+  sum = sum + t.time;
+
+  std::cout << "temps total = " << sum << "\n";
 
   // //Simulation d'une réponse JSON
   //   std::string simulated_json = R"(
@@ -98,12 +117,9 @@ int main() {
 
   // Initialisation depuis JSON
   // std::cout << "STRING :\n" << str << "\n";
-  Task t = Task::from_json(str);
 
   // std::cout << "Matrice a:\n" << t.a << "\n";
   // std::cout << "Vecteur b:\n" << t.b << "\n";
-
-  t.work(); // Résolution
 
   return 0;
 } // TODO : FAIRE UN README pour les résultats,comparer different solver eigen

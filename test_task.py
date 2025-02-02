@@ -1,7 +1,7 @@
 import unittest
 from task import Task
 import numpy as np
-# pour  verifier que le test échoue $ uv run python unittest
+# pour  verifier que le test échoue $ uv run python test_task
 
 
 class TestTask(unittest.TestCase):
